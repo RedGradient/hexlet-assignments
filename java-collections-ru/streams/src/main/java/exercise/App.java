@@ -1,26 +1,20 @@
 package exercise;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 // BEGIN
 class App {
 
-    private static final String[] freeDomains = {"gmail.com", "yandex.ru", "hotmail.com"};
+    private static final List<String> FREE_DOMAINS = Arrays.asList("gmail.com", "yandex.ru", "hotmail.com");
 
-    private static boolean isDomainFree(String text) {
-        for (String item : App.freeDomains) {
-            if (text.endsWith(item)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int getCountOfFreeEmails(List<String> emails) {
-        var count = emails.stream()
-                .filter(App::isDomainFree)
+    public static long getCountOfFreeEmails(List<String> emails) {
+        return emails
+                .stream()
+                .map(email -> email.split("@")[1])
+                .filter(FREE_DOMAINS::contains)
                 .count();
-        return (int) count;
     }
 }
 // END
