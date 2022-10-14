@@ -12,20 +12,12 @@ import java.util.stream.Collectors;
 // BEGIN
 class Sorter {
 
-    private static Date getBirthdayDate(Map<String, String> person) {
-        var birthdayDateString = person.get("birthday");
-        try {
-            return new SimpleDateFormat("dd-MM-yyyy").parse(birthdayDateString);
-        } catch (ParseException ignored) {}
-        return null;
-    }
-
     public static List<String> takeOldestMans(List<Map<String, String>> people) {
 
         return people
                 .stream()
                 .filter(person -> person.get("gender").equals("male"))
-                .sorted(Comparator.comparing(Sorter::getBirthdayDate))
+                .sorted(Comparator.comparingLong(person -> LocalDate.parse(person.get("birthday")).toEpochDay()))
                 .map(person -> person.get("name"))
                 .toList();
     }
