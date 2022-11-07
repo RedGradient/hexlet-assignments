@@ -2,8 +2,6 @@ package exercise.connections;
 
 import exercise.TcpConnection;
 
-import java.util.Dictionary;
-
 // BEGIN
 public class Disconnected implements Connection {
 
@@ -14,13 +12,8 @@ public class Disconnected implements Connection {
     }
 
     @Override
-    public String getCurrentState() {
-        return "disconnected";
-    }
-
-    @Override
     public void connect() {
-        connection.changeState(new Connected(connection));
+        connection.setState(new Connected(connection));
         System.out.println("Connected");
     }
 
@@ -32,6 +25,11 @@ public class Disconnected implements Connection {
     @Override
     public void write(String text) {
         System.out.println("Error! Can't write when connection is disconnected");
+    }
+
+    @Override
+    public String getName() {
+        return "disconnected";
     }
 
 }
