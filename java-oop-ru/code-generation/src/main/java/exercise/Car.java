@@ -19,42 +19,14 @@ class Car {
     User owner;
 
     // BEGIN
-    public String serialize() {
+    public String serialize() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return objectMapper.writeValueAsString(this);
     }
 
-    public static Car unserialize(String json) {
+    public static Car unserialize(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode tree = null;
-        try {
-            tree = objectMapper.readTree(json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        var carJson = tree.get("owner").toString();
-
-        Integer id = null;
-        String brand = null;
-        String model = null;
-        String color = null;
-        User owner = null;
-        try {
-            id = tree.get("id").asInt();
-            brand = tree.get("brand").asText();
-            model = tree.get("model").asText();
-            color = tree.get("color").asText();
-            owner = objectMapper.readValue(carJson, User.class);
-            return new Car(id, brand, model, color, owner);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return objectMapper.readValue(json, Car.class);
     }
     // END
 }
