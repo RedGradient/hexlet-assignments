@@ -55,33 +55,26 @@ public class SessionServlet extends HttpServlet {
                  throws IOException, ServletException {
 
         // BEGIN
+        var session = request.getSession();
+
         var email = request.getParameter("email");
         var password = request.getParameter("password");
 
-        var session = request.getSession();
+        var userData = Map.of("email", email, "password", password);
+        var user = users.findByEmail(userData.get("email"));
 
-        if (!email.isEmpty() && !password.isEmpty()) {
-            var users = getUsers();
-            var user = users.findByEmail(email);
-            if (user != null) {
-                if (user.get("password").equals(password)) {
-                    session.setAttribute("userId", user.get("id"));
-                    session.setAttribute("flash",  "Вы успешно вошли");
-                    response.sendRedirect("/");
-                    return;
-                }
-            }
+        if (user == null || !user.get("password").equals(password)) {
+            response.setStatus(422);
+            request.setAttribute("user", Map.of("email", email));
+            session.setAttribute("flash", "Неверные логин или пароль");
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/login.jsp");
+            requestDispatcher.forward(request, response);
+            return;
         }
 
-//        System.out.println(email + "\n" + password);
-
-        session.setAttribute("flash", "Неверные логин или пароль");
-        response.setStatus(422);
-        request.setAttribute("user", Map.of("email", email));
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/login.jsp");
-
-        requestDispatcher.forward(request, response);
-
+        session.setAttribute("userId", user.get("id"));
+        session.setAttribute("flash",  "Вы успешно вошли");
+        response.sendRedirect("/");
         // END
     }
 
