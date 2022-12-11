@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layouts/application.html}">
+
+<head>
+  <title>Show article</title>
+</head>
+<section layout:fragment="content">
+  <!-- BEGIN -->
+  <p th:text="${article.id}"></p>
+  <p th:text="${article.title}"></p>
+  <p th:text="${article.body}"></p>
+  <!-- END -->
+</section>
