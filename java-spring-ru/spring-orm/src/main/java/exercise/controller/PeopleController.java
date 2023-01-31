@@ -38,8 +38,7 @@ public class PeopleController {
 
     @DeleteMapping(path = "/{id}")
     public void deletePerson(@PathVariable long id) {
-        var person = this.personRepository.findById(id);
-        this.personRepository.delete(person);
+        this.personRepository.deleteById(id);
     }
 
     @PatchMapping(path = "/{id}")
