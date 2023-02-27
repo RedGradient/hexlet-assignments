@@ -32,10 +32,18 @@ public class WeatherService {
     }
 
     // BEGIN
-    public LinkedHashMap<String, Object> getWeather(String city) throws ParseException {
-        var weather = client.get(WEATHER_BASE_URL + city);
-        var jsonParser = new JSONParser(weather);
-        return jsonParser.parseObject();
+    public Map<String, String> getWeather(String city) {
+        var response = client.get(WEATHER_BASE_URL + city);
+        var mapper = new ObjectMapper();
+
+        Map<String, String> result;
+        try {
+            result = mapper.readValue(response, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        return result;
     }
     // END
 }
