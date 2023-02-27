@@ -47,7 +47,6 @@ public class CommentController {
                 () -> new ResourceNotFoundException("Post not found")
         );
         var newComment = new Comment();
-//        newComment.setId(6L);
         newComment.setPost(post);
         newComment.setContent("Test comment");
         commentRepository.save(newComment);

@@ -77,6 +77,7 @@ public class ArticlesServlet extends HttpServlet {
         ServletContext context = request.getServletContext();
         Connection connection = (Connection) context.getAttribute("dbConnection");
         // BEGIN
+
         List<Map<String, String>> articles = new ArrayList<>();
 
         var string_page = request.getParameter("page");

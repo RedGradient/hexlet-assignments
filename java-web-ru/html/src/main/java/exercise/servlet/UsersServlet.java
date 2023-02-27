@@ -95,13 +95,30 @@ public class UsersServlet extends HttpServlet {
         var isUserExist = false;
         var out = response.getWriter();
         List<Map> users = getUsers();
+        var body = new StringBuilder();
+        body.append("<table>");
         for (var user : users) {
             if (user.get("id").equals(id)) {
-                out.println(user);
+                var html = """
+                    <tr>
+                        <td>%s</td>
+                        <td>
+                            <a href="/users/%s">%s %s</a>
+                        </td>
+                        <td>%s</td>
+                    </tr>""";
+                var row = String.format(html,
+                        user.get("id"),
+                        user.get("id"),
+                        user.get("firstName"),
+                        user.get("lastName"),
+                        user.get("email"));
+                body.append(row);
                 isUserExist = true;
                 break;
             }
         }
+        body.append("</table>");
         if (!isUserExist) {
             response.sendError(404);
         }

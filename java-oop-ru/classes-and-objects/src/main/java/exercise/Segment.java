@@ -2,7 +2,6 @@ package exercise;
 
 // BEGIN
 class Segment {
-
     private Point begin;
     private Point end;
 
