@@ -1,6 +1,6 @@
 package exercise;
 
-import exercise.model.User;
+//import exercise.model.User;
 import exercise.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 
@@ -26,10 +27,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // BEGIN
         var user = repository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException("User nor found")
+            () -> new UserNotFoundException("User not found")
         );
 
-        return (UserDetails) user;
+        return new User(username, user.getPassword(), authorities);
         // END
     }
 }
