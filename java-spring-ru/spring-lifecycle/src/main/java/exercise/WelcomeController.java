@@ -1,0 +1,26 @@
+package exercise;
+
+import exercise.daytimes.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+// BEGIN
+@RestController
+public class WelcomeController {
+
+    @Autowired
+    private Daytime daytime;
+
+    @Autowired
+    private Meal meal;
+
+    @GetMapping(path = "/daytime")
+    public String greet() {
+        var daytimeName = daytime.getName();
+        var mealName = meal.getMealForDaytime(daytimeName);
+        return String.format("It is %s now. Enjoy your %s", daytimeName, mealName);
+    }
+}
+// END
