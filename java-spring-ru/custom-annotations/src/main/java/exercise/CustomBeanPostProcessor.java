@@ -13,24 +13,31 @@ import java.util.HashMap;
 // BEGIN
 @Configuration
 public class CustomBeanPostProcessor implements BeanPostProcessor {
-    private HashMap<String, String> beans = new HashMap<>();
+    private HashMap<String, Class> annotatedBeans = new HashMap<>();
+    private HashMap<String, String> loggingLevels = new HashMap<>();
     private final Logger LOGGER = LoggerFactory.getLogger(CustomBeanPostProcessor.class);
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(Inspect.class)) {
             var loggingLevel = bean.getClass().getAnnotation(Inspect.class).level();
-            beans.put(beanName, loggingLevel);
+            annotatedBeans.put(beanName, bean.getClass());
+            loggingLevels.put(beanName, loggingLevel);
         }
-        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+        return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (beans.containsKey(beanName)) {
-            return Proxy.newProxyInstance(
-                bean.getClass().getClassLoader(),
-                bean.getClass().getInterfaces(),
+        if (!annotatedBeans.containsKey(beanName)) {
+            return bean;
+        }
+
+        var beanClass = annotatedBeans.get(beanName);
+        return Proxy.newProxyInstance(
+                beanClass.getClassLoader(),
+                beanClass.getInterfaces(),
+
                 (proxy, method, args) -> {
                     var log = String.format(
                             "Was called method: %s() with arguments: %s",
@@ -38,17 +45,14 @@ public class CustomBeanPostProcessor implements BeanPostProcessor {
                             Arrays.toString(args)
                     );
 
-                    var loggingLevel = beans.get(beanName);
-                    switch (loggingLevel) {
+                    switch (loggingLevels.get(beanName)) {
                         case "info" -> LOGGER.info(log);
                         case "debug" -> LOGGER.debug(log);
                     }
 
                     return method.invoke(bean, args);
                 }
-            );
-        }
-        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+        );
     }
 }
 // END
