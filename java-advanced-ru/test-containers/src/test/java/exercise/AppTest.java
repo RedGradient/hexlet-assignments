@@ -39,7 +39,7 @@ public class AppTest {
             .withDatabaseName("dbname")
             .withUsername("sa")
             .withPassword("sa")
-            .withInitScript("script.sql");
+            .withInitScript("init.sql");
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
@@ -71,7 +71,9 @@ public class AppTest {
                 )
                 .andReturn().getResponse();
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getContentAsString()).contains("Stark");
+
+        var responseGetAll = mockMvc.perform(get("/people")).andReturn().getResponse();
+        assertThat(responseGetAll.getContentAsString()).contains("Stark");
     }
 
     @Test
